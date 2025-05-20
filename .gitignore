@@ -1,0 +1,18 @@
+# Lukas person
+imaages/
+
+# IDEs
+.idea/
+
+
+# Environments
+.env
+env/
+venv/
+.venv
+
+# CMake
+devel/
+build/
+
+
