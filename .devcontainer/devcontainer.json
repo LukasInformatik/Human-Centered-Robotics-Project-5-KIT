@@ -1,0 +1,47 @@
+{
+    "name": "Project 5 Container",
+    "privileged": true,
+    "remoteUser": "go2edu",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "version": "latest",
+            "configureBashAsDefaultShell": true,
+            "username": "go2edu",
+            "userUid": "1000",
+            "userGid": "1000"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-iot.vscode-ros",
+                "ms-python.python",
+                "ms-vscode.cpptools",
+                "twxs.cmake"
+            ]
+        }
+    },
+    "workspaceFolder": "/home/go2edu/ros2_ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/go2edu/ros2_ws,type=bind",
+    "containerEnv": {
+        "LANG": "en_US.UTF-8",
+        "LANGUAGE": "en_US:en",
+        "LC_ALL": "en_US.UTF-8"
+    },
+    "runArgs": [
+        "--net=host",
+        "-e",
+        "DISPLAY=${env:DISPLAY}"
+    ],
+    "mounts": [
+        {
+            "source": "/tmp/.X11-unix",
+            "target": "/tmp/.X11-unix",
+            "type": "bind"
+        }
+    ],
+    "postCreateCommand": "bash -c 'source /opt/ros/${ROS_DISTRO}/setup.bash && rosdep update && pip install -r /home/go2edu/ros2_ws/src/go2_sdk/requirements.txt && rosdep install --from-paths /home/go2edu/ros2_ws/src/go2_sdk --ignore-src -r -y && colcon build --symlink-install'"
+}

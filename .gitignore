@@ -1,9 +1,13 @@
 # Lukas person
-imaages/
+images/
 
 # IDEs
 .idea/
-
+.vscode/*
+__pycache__/
+*.py[cod]
+.python-version
+*.code-workspace
 
 # Environments
 .env
@@ -11,8 +15,12 @@ env/
 venv/
 .venv
 
-# CMake
+# Build
 devel/
 build/
+install/
+log/
+
+src/go2_sdk
 
 
