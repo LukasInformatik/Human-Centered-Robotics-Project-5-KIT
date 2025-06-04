@@ -1,0 +1,6 @@
+- [ ] Connect to Robot and get everything running
+- [ ] Write a simple ROS Node (python script) that reads some sensor data and prints it to the console.
+- [ ] Physically connect the Depth Camera to the robot
+- [ ] Read the depth camera data (using https://www.docs.quadruped.de/projects/go2/html/go2_driver.html#go2-intel-realsense-d405)
+- [ ] Try the Image detection by J.Francis
+- [ ] ...
