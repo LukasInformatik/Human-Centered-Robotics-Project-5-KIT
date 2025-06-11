@@ -30,10 +30,7 @@ The project focuses on enabling the Unitree GO2 robot to:
 git clone git@github.com:LukasInformatik/human_centered_robots_project_5.git
 cd human_centered_robots_project_5
 ```
-2. Clone the [unofficial unitree SDK](https://github.com/abizovnuralem/go2_ros2_sdk/tree/master#) into src/ and install submodules:
-```bash
-git clone --recurse-submodules -j8 https://github.com/abizovnuralem/go2_ros2_sdk.git src/go2_sdk/
-```
+2. Open in devcontainer as described in Usage
 
 ## Usage
 
