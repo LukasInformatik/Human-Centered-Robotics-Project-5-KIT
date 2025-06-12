@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     portaudio19-dev \
     git \
     wget \
+    usbutils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS packages

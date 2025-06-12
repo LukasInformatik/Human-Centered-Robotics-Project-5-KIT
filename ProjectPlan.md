@@ -1,6 +1,10 @@
 - [ ] Connect to Robot and get everything running
 - [ ] Write a simple ROS Node (python script) that reads some sensor data and prints it to the console.
+- [ ] Figure out how to simply use the realsense camera with ros
 - [ ] Physically connect the Depth Camera to the robot
+- [ ] Figure out how to run the realsense node on the robot
 - [ ] Read the depth camera data (using https://www.docs.quadruped.de/projects/go2/html/go2_driver.html#go2-intel-realsense-d405)
-- [ ] Try the Image detection by J.Francis
+- [ ] Train ML model on Human detection -> either bounding box, segmentation, if necessary also predict distance (use depth data)
+- [ ] Figure out / implement how to calculate a target pose from this information
+- [ ] Figure out how to make robot move to that target pose
 - [ ] ...
