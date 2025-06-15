@@ -22,5 +22,8 @@ install/
 log/
 
 src/go2_sdk
+object_detector/coco_annotations
+object_detector/coco_images
+yolo_coco_person/
 
 
