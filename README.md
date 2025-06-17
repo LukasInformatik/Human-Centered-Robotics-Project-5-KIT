@@ -32,6 +32,19 @@ cd human_centered_robots_project_5
 ```
 2. Open in devcontainer as described in Usage
 
+**Local setup:**
+```bash
+source /opt/ros/humble/setup.bash 
+ git clone --recurse-submodules https://github.com/abizovnuralem/go2_ros2_sdk.git src/go2_sdk  
+ pip install -r src/go2_sdk/requirements.txt 
+ sudo apt-get update  
+ sudo apt-get upgrade -y 
+ rosdep update 
+ rosdep install --from-paths src --ignore-src -r -y 
+ sudo apt install ros-humble-librealsense2*
+ colcon build --symlink-install
+```
+
 ## Usage
 
 Devcontainers are Docker containers configured to provide a complete, isolated development environment. VS Code integrates with Docker to automatically load a dev container when you open a project.
