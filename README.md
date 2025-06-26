@@ -11,18 +11,6 @@ The project focuses on enabling the Unitree GO2 robot to:
 - React to human gestures or voice commands (optional extension).
 - Operate safely in human-populated environments.
 
-## Installation
-
-### Prerequisites
-1. Docker ([Installation Guide](https://www.docker.com/))
-    - Required for containerized development and deployment.
-2. VS Code ([Download](https://code.visualstudio.com/))
-   - For development with the Dev Containers extension.
-3. X Server (for GUI applications in Docker)
-   - Linux: Install xorg and enable X11 forwarding. This should already be the case on most linux version.
-   - Windows: Use VcXsrv and WSL (guide below).
-   - macOS: Use XQuartz (guide below).
-
 ### Setup instructions
 
 1. Clone the repository
@@ -45,21 +33,9 @@ source /opt/ros/humble/setup.bash
  colcon build --symlink-install
 ```
 
-## Usage
-
-Devcontainers are Docker containers configured to provide a complete, isolated development environment. VS Code integrates with Docker to automatically load a dev container when you open a project.
-
-For this open VS code and install the extension [**Dev Containers**](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). When opening this the root folder of this project, VS code will automatically prompt to open the workspace in a devcontainer. 
-
-If this does not happen just press `CTRL + SHIFT + p` or the `><` button in the bottom left and type `open` and select `Dev Containers: Reopen in Container`. This takes a while when building the first time ... go get a coffee :)
-
-### TODO
-Here goes some more documentation on how to launch ROS programs. We will need to figure out when you have to source ros configs and how to launch stuff. The devcontainer should already run `colon build` but depending on how we set up our own package this documentation goes here.
-
-Some problems can arrise due to Docker not having permissions to communicate with the X Server. On Mac and Linux running `xhost +local:docker` can help.
-
-
 ## Additional guides
+
+A deployment option via devcontainer is on the equivalent named branch. 
 
 **Windows guide**
 

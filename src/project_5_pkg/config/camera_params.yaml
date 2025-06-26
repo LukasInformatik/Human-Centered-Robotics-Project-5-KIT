@@ -1,0 +1,23 @@
+# config/camera_params.yaml
+camera:
+  ros__parameters:
+    enable_color: true
+    enable_depth: false
+    enable_infra: false
+    enable_infra1: false
+    enable_infra2: false
+    enable_gyro: false
+    enable_accel: false
+    enable_sync: true
+
+    color_profile: "640x480x15"
+    depth_profile: "640x480x15"
+    color_format: "RGB8"
+    depth_format: "Z16"
+
+    initial_reset: true
+
+    # color_qos: "SENSOR_DATA"
+    # depth_qos: "SENSOR_DATA"
+
+    publish_tf: false

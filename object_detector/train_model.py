@@ -2,7 +2,7 @@ from ultralytics import YOLO
 
 def main():
     # Load a small YOLOv8 model
-    model = YOLO('runs/detect/yolov8_person_coco10/weights/best.pt')
+    model = YOLO('yolov8n.pt')
 
     # Train on your new coco-person dataset
     model.train(

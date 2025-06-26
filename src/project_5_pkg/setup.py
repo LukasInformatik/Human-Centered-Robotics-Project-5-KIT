@@ -12,10 +12,14 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'models'), glob('models/*.pt')),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'scripts'), glob('scripts/*')),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools',
+                    'opencv-python',
+                    'ultralytics',
+                    'numpy<2',],
     zip_safe=True,
     maintainer='ros',
     maintainer_email='lukas.d.ringle@gmail.com',
@@ -24,6 +28,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'yolo_person_tracker_node = project_5_pkg.yolo_person_tracker_node:main',
         ],
     },
 )
