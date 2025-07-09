@@ -1,0 +1,15 @@
+[submodule "src/unitree_sdk2"]
+	path = src/unitree_sdk2
+	url = https://github.com/unitreerobotics/unitree_sdk2.git
+[submodule "src/unitree_mujoco"]
+	path = src/unitree_mujoco
+	url = https://github.com/unitreerobotics/unitree_mujoco.git
+[submodule "src/third_party/realsense-ros"]
+	path = src/third_party/realsense-ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+[submodule "src/mujoco"]
+	path = src/mujoco
+	url = https://github.com/google-deepmind/mujoco.git
+[submodule "src/unitree_sdk2_python"]
+	path = src/unitree_sdk2_python
+	url = https://github.com/unitreerobotics/unitree_sdk2_python.git
