@@ -22,8 +22,10 @@ install/
 log/
 
 src/go2_sdk
-object_detector/coco_annotations
-object_detector/coco_images
+src/unitree_mujoco
+src/unitree_sdk2
+src/unitree_sdk2_python
 yolo_coco_person/
+go2_venv/
 
 
