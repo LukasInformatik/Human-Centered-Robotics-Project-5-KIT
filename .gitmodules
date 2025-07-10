@@ -1,0 +1,9 @@
+[submodule "src/unitree_sdk2"]
+	path = src/unitree_sdk2
+	url = https://github.com/unitreerobotics/unitree_sdk2.git
+[submodule "src/realsense-ros"]
+	path = src/realsense-ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+[submodule "src/unitree_sdk2_python"]
+	path = src/unitree_sdk2_python
+	url = https://github.com/unitreerobotics/unitree_sdk2_python.git
