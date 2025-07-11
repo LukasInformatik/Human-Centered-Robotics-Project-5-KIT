@@ -21,16 +21,24 @@ cd human_centered_robots_project_5
 
 Local setup:
 ```bash
-git submodule init   # Initialize submodules (reads `.gitmodules`)
-git submodule update # Fetch & checkout submodules
+git submodule update --init --recursive
 
 python -m venv .venv # Create virtual python environment
 source .venv\Scripts\activate.bat # Windows
 source .venv/bin/activate # Bash / Zsh / Sh
 
-cd src/unitree_sdk2_python
-pip install -e .
+# Unoffical sdk repo
+sudo apt install ros-$ROS_DISTRO-image-tools
+sudo apt install ros-$ROS_DISTRO-vision-msgs
+sudo apt install python3-pip clang portaudio19-dev
+
+cd src/go2_ros2_sdk
+pip install -r requirements.txt
 cd ../..
+
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosdep install --from-paths src --ignore-src -r -y
+colcon build --packages-select go2_ros2_sdk --cmake-clean-cache
 ```
 
 For realsense ros wrapper, follow instructions on their [github page](https://github.com/IntelRealSense/realsense-ros).
@@ -56,13 +64,9 @@ Start realsense node with configuration (this should be done on the robot)
 ros2 launch project_5_pkg realsense_local.launch
 ```
 
-Make sure your DDS connection to the robot stands. An example configuration XML file can be found [here](cyclonedds.xml).
-The ROS topics of the extension board should now be visible:
+Usage unofficial SDK:
 ```bash
-ros2 topic list
-```
-
-Start yolo node on PC
-```bash
-ros2 run project_5_pkg yolo_person_tracker_node.py
+export ROBOT_IP=192.168.1.103
+export CONN_TYPE="webrtc"
+ros2 launch go2_robot_sdk robot.launch.py
 ```

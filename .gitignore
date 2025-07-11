@@ -21,10 +21,8 @@ build/
 install/
 log/
 
-src/go2_sdk
-src/unitree_mujoco
-src/unitree_sdk2
-src/unitree_sdk2_python
+src/go2_ros2_sdk
+src/realsense-ros
 object_detector/coco_annotations/
 object_detector/coco_images/
 yolo_coco_person/
