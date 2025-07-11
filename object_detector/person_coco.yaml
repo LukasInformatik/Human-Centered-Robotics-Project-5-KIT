@@ -1,6 +1,0 @@
-path: ./yolo_coco_person
-train: images/train
-val:   images/val
-
-nc: 1
-names: ['person']
