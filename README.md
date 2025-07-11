@@ -21,8 +21,7 @@ cd human_centered_robots_project_5
 
 Local setup:
 ```bash
-git submodule init   # Initialize submodules (reads `.gitmodules`)
-git submodule update # Fetch & checkout submodules
+git submodule update --init --recursive --force
 
 python -m venv .venv # Create virtual python environment
 source .venv\Scripts\activate.bat # Windows
