@@ -13,59 +13,56 @@ The project focuses on enabling the Unitree GO2 robot to:
 
 ### Setup instructions
 
-1. Clone the repository
+Clone the repository
 ```bash
 git clone git@github.com:LukasInformatik/human_centered_robots_project_5.git
 cd human_centered_robots_project_5
 ```
-2. Open in devcontainer as described in Usage
 
-**Local setup:**
+Local setup:
 ```bash
-source /opt/ros/humble/setup.bash 
- git clone --recurse-submodules https://github.com/abizovnuralem/go2_ros2_sdk.git src/go2_sdk  
- pip install -r src/go2_sdk/requirements.txt 
- sudo apt-get update  
- sudo apt-get upgrade -y 
- rosdep update 
- rosdep install --from-paths src --ignore-src -r -y 
- sudo apt install ros-humble-librealsense2*
- colcon build --symlink-install
+git submodule init   # Initialize submodules (reads `.gitmodules`)
+git submodule update # Fetch & checkout submodules
+
+python -m venv .venv # Create virtual python environment
+source .venv\Scripts\activate.bat # Windows
+source .venv/bin/activate # Bash / Zsh / Sh
+
+cd src/unitree_sdk2_python
+pip install -e .
+cd ../..
 ```
 
-## Additional guides
+For realsense ros wrapper, follow instructions on their [github page](https://github.com/IntelRealSense/realsense-ros).
 
-A deployment option via devcontainer is on the equivalent named branch. 
-
-**Windows guide**
-
-Open PowerShell as Administrator and run:
-```Powershell
-wsl --install
-wsl --set-default-version 2 # Set WSL 2 as default
+Afterward, build project_5 ros package:
+```bash
+# cd to ws directory
+source /opt/ros/$ROS_DOSTRO/setup.bash
+rosdep update 
+rosdep install --from-paths src/project_5_pkg --ignore-src -r -y
+colcon build --packages-select project_5_pkg --cmake-clean-cache
 ```
-Enable WSL 2 integration in Docker settings:
-- Open Docker Desktop
-- Go to Settings > Resources > WSL Integration
-- Enable integration with your installed distro
 
-Download and install VcXsrv from [sourceforge.net](https://sourceforge.net/projects/vcxsrv/).
-Run XLaunch (from Start menu) and configure:
-- Select "Multiple windows"
-- Display number: -1 (auto-select)
-- Start no client
-- Check "Disable access control" (for simplicity)
-- Save configuration for future use
+### Usage
 
-**MacOS guide**
+When opening a new terminal allways source ws setup
+```bash
+source install/setup.bash
+```
 
-Install XQuartz:
-- Download XQuartz from [www.xquartz.org](https://www.xquartz.org/).
-- Run the installer and follow the prompts
-- Restart your Mac to complete installation
+Start realsense node with configuration (this should be done on the robot)
+```bash
+ros2 launch project_5_pkg realsense_local.launch
+```
 
-Configure XQuartz:
-- Open XQuartz (from Applications > Utilities)
-- Go to XQuartz > Preferences:
-  - In the "Security" tab: Check "Allow connections from network clients"
-  - In the "Output" tab: Uncheck "Enable syncing" (can improve performance)
+Make sure your DDS connection to the robot stands. An example configuration XML file can be found [here](cyclonedds.xml).
+The ROS topics of the extension board should now be visible:
+```bash
+ros2 topic list
+```
+
+Start yolo node on PC
+```bash
+ros2 run project_5_pkg yolo_person_tracker_node.py
+```
