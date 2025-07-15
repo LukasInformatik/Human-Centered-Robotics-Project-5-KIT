@@ -2,5 +2,16 @@ path: ./yolo_coco_person
 train: images/train
 val:   images/val
 
+# Keypoint config
+kpt_shape: [17, 3]  # COCO format
+
 nc: 1
 names: ['person']
+
+# Augmentation
+augment: True
+flipud: 0.3
+fliplr: 0.5
+mosaic: 1.0
+mixup: 0.1
+copy_paste: 0.5  # Critical for pose estimation
