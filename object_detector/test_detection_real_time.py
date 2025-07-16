@@ -7,7 +7,7 @@ import pyrealsense2 as rs
 from ultralytics import YOLO
 
 # Load your trained YOLOv8 model
-model = YOLO('runs/detect/yolov8_person_coco10/weights/best.pt')
+model = YOLO('models/yolov8n_80_epochs.pt')
 
 # Initialize RealSense pipeline
 pipeline = rs.pipeline()
