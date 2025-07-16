@@ -14,7 +14,8 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'models'), glob('models/*.pt')),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-        (os.path.join('share', package_name, 'scripts'), glob('scripts/*')),
+        (os.path.join('share', package_name, 'scripts'), glob('scripts/*.py')),
+        (os.path.join('share', package_name, 'config'), glob('config/*'))
     ],
     install_requires=['setuptools',
                     'opencv-python',
@@ -29,6 +30,7 @@ setup(
     entry_points={
         'console_scripts': [
             'yolo_person_tracker_node = project_5_pkg.yolo_person_tracker_node:main',
+            'human_localizer_node = project_5_pkg.human_localizer_node:main'
         ],
     },
 )

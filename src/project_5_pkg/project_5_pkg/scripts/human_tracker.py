@@ -1,7 +1,8 @@
 # person_tracker.py
-import cv2
+import cv2, os
 import numpy as np
 from ultralytics import YOLO
+from ament_index_python.packages import get_package_share_directory
 
 class HumanTracker:
     """
@@ -9,8 +10,10 @@ class HumanTracker:
     Methode .track(frame) liefert (bbox, track_id) der ausgewählten Person.
     """
 
-    def __init__(self, model_path='runs/detect/yolov8_person_coco10/weights/best.pt'):
+    def __init__(self):
         # YOLOv8 Modell laden
+        package_share = get_package_share_directory('project_5_pkg')  # use your exact package name
+        model_path = os.path.join(package_share, 'models', 'yolov8n_80_epochs.pt')
         self.model = YOLO(model_path)
         self.selected_id = None
         self.latest_boxes = []
@@ -39,7 +42,7 @@ class HumanTracker:
             track_id: int ID oder None
         """
         # RGB für YOLO
-        results = self.model.track(rgb, conf=0.25, tracker="bytetrack.yaml", persist=True)
+        results = self.model.track(rgb, conf=0.25, tracker="botsort.yaml", persist=True)
 
         self.latest_boxes = []
         bbox_out = None

@@ -1,7 +1,6 @@
 import numpy as np
 from image_geometry import PinholeCameraModel
 from sensor_msgs.msg import CameraInfo
-from scipy.spatial.transform import Rotation as R
 
 class HumanLocalizer:
     """
@@ -24,7 +23,7 @@ class HumanLocalizer:
                  keypoints: dict,
                  depth_image: np.ndarray,
                  camera_info: CameraInfo,
-                 imu_quat: tuple = (0.0, 0.0, 0.0, 1.0)
+                 R_cam: np.array 
                  ) -> tuple:
         """
         Returns (x, y) in meters in the leveled ground plane.
@@ -32,10 +31,7 @@ class HumanLocalizer:
         # 1) set camera model from CameraInfo
         self._set_intrinsics(camera_info)
 
-        # 2) build rotation matrix from IMU quaternion
-        R_cam = R.from_quat(imu_quat).as_matrix()
-
-        # 3) collect valid 3D keypoints transformed into world leveled frame
+        # 2) collect valid 3D keypoints transformed into world leveled frame
         pts_world = []
         for joint in ['left_hip', 'right_hip', 'left_shoulder', 'right_shoulder']:
             if joint not in keypoints:
@@ -56,8 +52,8 @@ class HumanLocalizer:
         if not pts_world:
             raise ValueError("No valid depth at provided keypoints.")
 
-        # 4) mean in leveled/world frame
+        # 3) mean in leveled/world frame
         p_mean = np.mean(pts_world, axis=0)
 
-        # 5) return horizontal X and forward Z
+        # 4) return horizontal X and forward Z
         return float(p_mean[0]), float(p_mean[2])
