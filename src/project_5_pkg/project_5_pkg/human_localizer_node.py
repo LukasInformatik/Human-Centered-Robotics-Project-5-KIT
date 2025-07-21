@@ -7,9 +7,14 @@ from message_filters import Subscriber, ApproximateTimeSynchronizer
 import numpy as np
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 
-from project_5_pkg.scripts.keypoint_tracker import KeypointTracker
-from project_5_pkg.scripts.human_localizer import HumanLocalizer
-from project_5_pkg.scripts.human_tracker import HumanTracker
+try:
+    from project_5_pkg.scripts.keypoint_tracker import KeypointTracker
+    from project_5_pkg.scripts.human_localizer import HumanLocalizer
+    from project_5_pkg.scripts.human_tracker import HumanTracker
+except:
+    from scripts.keypoint_tracker import KeypointTracker
+    from scripts.human_localizer import HumanLocalizer
+    from scripts.human_tracker import HumanTracker
 
 class HumanLocalizerPipeline(Node):
     def __init__(self):
@@ -104,7 +109,7 @@ class HumanLocalizerPipeline(Node):
                 self.latest_imu_data.linear_acceleration.y,
                 self.latest_imu_data.linear_acceleration.z
             )
-            R, roll, pitch = self.acc2rotmat(acc)
+            R = self.rotation_from_accel_euler(acc)
 
             # --- Hier Pixelkoordinaten mit Tiefendaten und (fx,fy,cx,cy) in 3D reprojizieren ---
             x3d, z3d = self.localizer.localize(keypoints, depth, info_msg, R)
@@ -118,30 +123,38 @@ class HumanLocalizerPipeline(Node):
         """Speichert die neuesten IMU-Daten für die spätere Verwendung."""
         self.latest_imu_data = msg
         self.latest_imu_timestamp = msg.header.stamp
-    @staticmethod
-    def acc2rotmat(acc):
-        ax, ay, az = acc
 
-        roll = np.arctan2(ay, az)
-        pitch = np.arctan2(-ax, np.sqrt(ay * ay + az * az))
+    @staticmethod    
+    def rot_x(phi: float) -> np.ndarray:
+        """Rotationsmatrix um X-Achse um Winkel phi."""
+        c, s = np.cos(phi), np.sin(phi)
+        return np.array([[1, 0, 0],
+                        [0, c, -s],
+                        [0, s,  c]])
+    @staticmethod 
+    def rot_z(psi: float) -> np.ndarray:
+        """Rotationsmatrix um Z-Achse um Winkel psi."""
+        c, s = np.cos(psi), np.sin(psi)
+        return np.array([[ c, -s, 0],
+                        [ s,  c, 0],
+                        [ 0,  0, 1]])
+    @staticmethod 
+    def rotation_from_accel_euler(accel: np.ndarray) -> np.ndarray:
+        """
+        Berechnet R aus accel=(a_x,a_y,a_z), wobei y↓=g.
+        Liefert eine Rotation R, die den Körper von der
+        Neutrallage in diese Neigung überführt.
+        """
+        norm = np.linalg.norm(accel)
+        if norm < 1e-6:
+            return np.eye(3)
+        
+        a_x, a_y, a_z = accel / norm
+        r_x = np.arctan2(a_z, a_y)
+        r_z = np.arctan2(a_x, a_y)
 
-        Rx = np.array([
-            [1, 0, 0],
-            [0, np.cos(roll), -np.sin(roll)],
-            [0, np.sin(roll),  np.cos(roll)]
-        ])
-
-        Ry = np.array([
-            [ np.cos(pitch), 0, np.sin(pitch)],
-            [0, 1, 0],
-            [-np.sin(pitch), 0, np.cos(pitch)]
-        ])
-
-        R = Ry @ Rx
-        #print(
-        #    f"IMU: Roll={np.degrees(roll):.2f}°, Pitch={np.degrees(pitch):.2f}°\nR=\n{R}"
-        #    )
-        return R, roll, pitch
+        R = HumanLocalizerPipeline.rot_z(r_z) @ HumanLocalizerPipeline.rot_x(r_x)
+        return R
 
 def main(args=None):
     rclpy.init(args=args)
@@ -154,4 +167,7 @@ def main(args=None):
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    main()
+    #main()
+    acc = [0,8.495,4.905]
+    r = HumanLocalizerPipeline.rotation_from_accel_euler(acc)
+    print(r)
