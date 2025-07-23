@@ -103,9 +103,13 @@ class Go2MovementPublisher(Node):
             self.safety_stop_sent = True
             self.is_moving = False
 
-    def get_pos(self, image_x_offset, image_y_offset, depth, image_width=960, image_height=None, fov_horizontal=60.0, fov_vertical=None):
+    def get_pos(self, image_x_offset, image_y_offset, depth, image_width=1280, image_height=720, fov_horizontal=91.2, fov_vertical=65.5):
         """
         Calculate the 3D position and angle of a point from an RGBD image.
+        Intel® RealSense™ Tiefenkamera D435i 
+            1280x720
+            30fps
+            FoV (HxVxD) 91.2 x 65.5 x 100.6. 
         
         Args:
             image_x_offset (int): X pixel coordinate (0 to image_width-1)
