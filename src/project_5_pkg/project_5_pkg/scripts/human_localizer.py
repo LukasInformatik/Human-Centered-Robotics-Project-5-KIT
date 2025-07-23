@@ -2,6 +2,8 @@ import numpy as np
 from image_geometry import PinholeCameraModel
 from sensor_msgs.msg import CameraInfo
 
+ROBOT_T_CAM = np.array([[0,0,1,0],[-1,0,0,0],[0,-1,0,0],[0,0,0,1]])
+
 class HumanLocalizer:
     """
     Localizes a human in the ground plane relative to the camera using:
