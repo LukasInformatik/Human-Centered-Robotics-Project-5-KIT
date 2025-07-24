@@ -1,23 +1,21 @@
 # config/camera_params.yaml
-camera:
-  ros__parameters:
-    enable_color: true
-    enable_depth: false
-    enable_infra: false
-    enable_infra1: false
-    enable_infra2: false
-    enable_gyro: false
-    enable_accel: false
-    enable_sync: true
+go2:
+  d435i:
+    ros__parameters:
+      align_depth.enable: true
+      enable_sync: true
+      enable_infra1: false
+      enable_infra2: false
 
-    color_profile: "640x480x15"
-    depth_profile: "640x480x15"
-    color_format: "RGB8"
-    depth_format: "Z16"
+      color_profile: "640x480x30"
+      depth_profile: "640x480x30"
+      color_format: "RGB8"
+      depth_format: "Z16"
 
-    initial_reset: true
+      initial_reset: false
+      unite_imu_method: 2
+      publish_tf: false
 
-    # color_qos: "SENSOR_DATA"
-    # depth_qos: "SENSOR_DATA"
+      color_qos: "SENSOR_DATA"
+      depth_qos: "SENSOR_DATA"
 
-    publish_tf: false
