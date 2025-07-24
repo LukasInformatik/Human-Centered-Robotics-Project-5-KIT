@@ -20,7 +20,7 @@ from tf_transformations import (
 )
 
 # Parent frame for the transform: 'camera' or 'map'
-PARENT = 'camera'
+PARENT = 'map'
 
 
 class CameraOrientationNode(Node):
@@ -32,7 +32,7 @@ class CameraOrientationNode(Node):
     def __init__(self):
         super().__init__('camera_orientation_node')
 
-        # Madgwick filter setup
+        # Madgwick imu filter setup
         self.filter = Madgwick(Dt=1/50.0, beta=0.2)
         self.q = np.array([1.0, 0.0, 0.0, 0.0])  # [w, x, y, z]
         self.prev_time = None
