@@ -7,14 +7,9 @@ from message_filters import Subscriber, ApproximateTimeSynchronizer
 import numpy as np
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy
 
-try:
-    from project_5_pkg.scripts.keypoint_tracker import KeypointTracker
-    from project_5_pkg.scripts.human_localizer import HumanLocalizer
-    from project_5_pkg.scripts.human_tracker import HumanTracker
-except:
-    from scripts.keypoint_tracker import KeypointTracker
-    from scripts.human_localizer import HumanLocalizer
-    from scripts.human_tracker import HumanTracker
+from project_5_pkg.scripts.keypoint_tracker import KeypointTracker
+from project_5_pkg.scripts.human_localizer import HumanLocalizer
+from project_5_pkg.scripts.human_tracker import HumanTracker
 
 class HumanLocalizerPipeline(Node):
     def __init__(self):
@@ -106,7 +101,7 @@ class HumanLocalizerPipeline(Node):
             # IMU
             acc = (
                 self.latest_imu_data.linear_acceleration.x,
-                self.latest_imu_data.linear_acceleration.y,
+                -self.latest_imu_data.linear_acceleration.y,
                 self.latest_imu_data.linear_acceleration.z
             )
             R = self.rotation_from_accel_euler(acc)

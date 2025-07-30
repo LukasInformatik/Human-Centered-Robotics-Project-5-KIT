@@ -6,7 +6,7 @@ class KeypointTracker:
         self.visualize = visualize
 
         self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(static_image_mode=False,
+        self.pose = self.mp_pose.Pose(static_image_mode=True,
                                       model_complexity=1,
                                       enable_segmentation=False,
                                       min_detection_confidence=0.5,

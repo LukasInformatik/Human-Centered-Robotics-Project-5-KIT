@@ -20,7 +20,8 @@ setup(
     install_requires=['setuptools',
                     'opencv-python',
                     'ultralytics',
-                    'numpy<2',],
+                    'numpy',
+                    'unitree_sdk2py'],
     zip_safe=True,
     maintainer='ros',
     maintainer_email='lukas.d.ringle@gmail.com',
@@ -30,7 +31,10 @@ setup(
     entry_points={
         'console_scripts': [
             'yolo_person_tracker_node = project_5_pkg.yolo_person_tracker_node:main',
-            'human_localizer_node = project_5_pkg.human_localizer_node:main'
+            'human_localizer_node = project_5_pkg.human_localizer_node:main',
+            'movement_control_node = project_5_pkg.movement_control_node:main',
+            'yolo_keypoint_tracker_node = project_5_pkg.yolo_keypoint_tracker_node:main',
+            'publish_pose = project_5_pkg.publish_pose:main'
         ],
     },
 )
