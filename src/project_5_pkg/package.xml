@@ -11,6 +11,7 @@
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>tf-transformations</depend>
   
   <exec_depend>cv_bridge</exec_depend>
 
