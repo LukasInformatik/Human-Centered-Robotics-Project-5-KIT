@@ -19,11 +19,13 @@ class MovementControlNode(Node):
 
         # === 1. Initialize DDS & SDK client ===
         # Choose ROS_DOMAIN_ID=0 and interface
-        ChannelFactoryInitialize(1, 'lo')                 # local DDS setup
-        # ChannelFactoryInitialize(0, 'enx3c18a0238600')    # setup DDS participant/interface
-        self.client = SportClient()                       # high-level Go2 client           
+        # ChannelFactoryInitialize(1, 'lo')                 # local DDS setup
+        ChannelFactoryInitialize(0, 'enx3c18a0238600')    # setup DDS participant/interface
+        self.client = SportClient()                       # high-level Go2 client    
+        self.client.SetTimeout(10.0)       
         self.client.Init()                                # create underlying DDS channels  
-        self.client.StandUp()                             # bring robot to standing mode    
+        self.client.StandUp()                             # bring robot to standing mode
+        self.client.StopMove()  
 
         # === 2. Controller parameters ===
         self.desired_distance   = 1.2   # m
@@ -115,14 +117,17 @@ class MovementControlNode(Node):
         self.get_logger().info(
             f"Pred → x: {pred_x:.2f}, z: {pred_z:.2f} | cmd → vx: {vx:.2f}, ω: {yaw_rate:.2f}"
         )
-
-        # Send velocity command
-        self.client.Move(vx, 0.0, yaw_rate)      # forward, lateral=0, yaw
+        
+        if vx == 0 and yaw_rate == 0:
+            self.client.StopMove()
+        else:
+            # Send velocity command
+            self.client.Move(vx, 0.0, yaw_rate)      # forward, lateral=0, yaw
 
     def destroy_node(self):
         # Safely lay down before exit
-        self.client.Move(0.0, 0.0, 0.0)
-        self.client.StandDown()                
+        self.client.StopMove()
+        # self.client.StandDown()                
         super().destroy_node()
 
 class PIDController:
@@ -158,6 +163,7 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+    
 
 if __name__ == '__main__':
     main()
