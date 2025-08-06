@@ -19,9 +19,9 @@ DESIRED_DISTANCE   = 1.20               # [m]
 CONTROL_RATE_HZ    = 10.0               # loop frequency
 PRED_HORIZON_S     = 0.50               # look-ahead for prediction
 DIST_DEADBAND      = 0.10               # [m]  |vx| < this ⇒ 0
-YAW_DEADBAND       = 0.05               # [rad]
+YAW_DEADBAND       = math.radians(5)    # [rad]
 MAX_FWD_SPEED      = 1.6                # [m/s]
-MAX_YAW_SPEED      = math.radians(20)   # [rad/s]
+MAX_YAW_SPEED      = math.radians(60)   # [rad/s]
 TF_TIMEOUT_S       = 0.50               # [s]     TF older than this → stop
 EMA_ALPHA          = 0.5                # filter weight – 0: no new data, 1: no smoothing
 
@@ -111,7 +111,7 @@ class MovementControlNode(Node):
         
         # TF timestamp (ROS time) convert to float seconds
         tf_time_ros = tf.header.stamp
-        tf_time_sec = tf_time_ros + tf_time_ros.nanosec * 1e-9
+        tf_time_sec = tf_time_ros.sec + tf_time_ros.nanosec * 1e-9
         now_ros_sec = self.clock.now().seconds_nanoseconds()[0] + \
                       self.clock.now().seconds_nanoseconds()[1] * 1e-9
                       
@@ -121,7 +121,7 @@ class MovementControlNode(Node):
             return
         
         tx, tz = tf.transform.translation.x, tf.transform.translation.z
-        self.position_buffer.append((now, tx, tz))
+        self.pos_buf.append((now, tx, tz))
 
         # Helps with person changing velocity
         pred_x, pred_z = self.predict()
@@ -143,6 +143,9 @@ class MovementControlNode(Node):
             self.yaw_pid.reset()
         else:
             yaw_rate = self.yaw_pid.compute(yaw_err, now)
+        
+        # Scale forward speed so robot naturally slows while turning
+        vx *= math.cos(yaw_err)
             
         # Velocity -> per-tick displacement
         step_x  = self._vel_to_step(vx,       MAX_FWD_SPEED)
