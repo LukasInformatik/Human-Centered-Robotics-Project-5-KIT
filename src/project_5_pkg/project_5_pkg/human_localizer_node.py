@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image, CameraInfo
+from std_msgs.msg import Int32
 from cv_bridge import CvBridge
 import cv2
 from message_filters import Subscriber, ApproximateTimeSynchronizer
@@ -25,6 +26,12 @@ class HumanLocalizerPipeline(Node):
         self.human_tracker = HumanTracker()
         self.kf = HumanPositionKalmanFilter()
         
+        # Publisher for signal pose
+        self.signal_pose_publisher = self.create_publisher(
+            Int32, 
+            '/human/signal_pose', 
+            10
+        )
 
         # Define QoS profiles
         camera_qos = QoSProfile(
@@ -69,7 +76,6 @@ class HumanLocalizerPipeline(Node):
             stamp = img_msg.header.stamp
             timestamp = stamp.sec + stamp.nanosec * 1e-9
 
-
             # --- Hier yolo tracker auf 'rgb' anwenden ---
                 # bounding box (x,y, width, height)
             if True:
@@ -81,6 +87,12 @@ class HumanLocalizerPipeline(Node):
 
             # --- Hier mediapipe pose auf jeder BBox laufen lassen ---
             keypoints = self.kp_tracker.detect_pose(rgb, bb)
+            detected_signal_pose = self.kp_tracker.check_for_signal_pose(rgb, bb, id=0)
+
+            # --- Publish signal pose ---
+            pose_msg = Int32()
+            pose_msg.data = detected_signal_pose
+            self.signal_pose_publisher.publish(pose_msg)
 
             # --- Hier Pixelkoordinaten mit Tiefendaten und (fx,fy,cx,cy) in 3D reprojizieren ---
             p_mean = self.localizer.localize(keypoints, depth, info_msg)
@@ -104,6 +116,7 @@ class HumanLocalizerPipeline(Node):
             t.transform.rotation.w = 1.0
 
             self.tf_broadcaster.sendTransform(t)
+            
         except Exception as e:
             self.get_logger().error(f'Fehler im synchronized callback: {e}')
 
