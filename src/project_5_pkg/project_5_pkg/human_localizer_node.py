@@ -79,7 +79,7 @@ class HumanLocalizerPipeline(Node):
             # --- Hier yolo tracker auf 'rgb' anwenden ---
                 # bounding box (x,y, width, height)
             if True:
-                bb, _ = self.human_tracker.track(rgb)
+                bb, id = self.human_tracker.track(rgb)
             else:
                 x = y = 0
                 height, width = frame.shape[:2]
@@ -87,7 +87,7 @@ class HumanLocalizerPipeline(Node):
 
             # --- Hier mediapipe pose auf jeder BBox laufen lassen ---
             keypoints = self.kp_tracker.detect_pose(rgb, bb)
-            detected_signal_pose = self.kp_tracker.check_for_signal_pose(rgb, bb, id=0)
+            detected_signal_pose = self.kp_tracker.check_for_signal_pose(rgb, bb, id)
 
             # --- Publish signal pose ---
             pose_msg = Int32()
