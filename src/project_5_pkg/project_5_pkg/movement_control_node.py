@@ -17,14 +17,12 @@ from unitree_sdk2py.go2.sport.sport_client import SportClient
 # Tuneable Constants
 DESIRED_DISTANCE   = 1.20               # [m]
 CONTROL_RATE_HZ    = 10.0               # loop frequency
-PRED_HORIZON_S     = 0.50               # look-ahead for prediction
+PRED_HORIZON_S     = 0.15               # look-ahead for prediction
 DIST_DEADBAND      = 0.10               # [m]  |vx| < this ⇒ 0
 YAW_DEADBAND       = math.radians(5)    # [rad]
-MAX_FWD_SPEED      = 1.6                # [m/s]
+MAX_FWD_SPEED      = 1.0                # [m/s]
 MAX_YAW_SPEED      = math.radians(60)   # [rad/s]
 TF_TIMEOUT_S       = 0.50               # [s]     TF older than this → stop
-EMA_ALPHA          = 0.5                # filter weight – 0: no new data, 1: no smoothing
-
 
 class PIDController:
     def __init__(self, kp, ki, kd, output_limit):
@@ -65,8 +63,8 @@ class MovementControlNode(Node):
         self.dt = 1.0 / CONTROL_RATE_HZ
         self.pos_buf = deque(maxlen=int(CONTROL_RATE_HZ * PRED_HORIZON_S))
         
-        self.distance_pid = PIDController(kp=0.8, ki=0.05, kd=0.2, output_limit=0.7)
-        self.yaw_pid      = PIDController(kp=1.5, ki=0.05, kd=0.3, output_limit=1.2)
+        self.distance_pid = PIDController(kp=0.8, ki=0.00, kd=0.25, output_limit=MAX_FWD_SPEED)
+        self.yaw_pid      = PIDController(kp=1.0, ki=0.00, kd=0.5, output_limit=MAX_YAW_SPEED)
 
         # === TF listener  ===
         self.tf_buffer   = Buffer()
@@ -77,12 +75,14 @@ class MovementControlNode(Node):
         self.create_timer(self.dt, self.control_loop)
         self.get_logger().info("PersonFollowerPIDNode ready. Entering control loop.")
         
-    def _vel_to_step(self, v, limit_per_sec):
+        self.tracking = False
+        
+    def _clip_control_values(self, v, limit_per_sec):
         """
         Convert velocity (m/s or rad/s) → step (m or rad)
         """
         v = float(np.clip(v, -limit_per_sec, limit_per_sec))
-        return v * self.dt
+        return v #* self.dt
 
     def predict(self):
         if len(self.pos_buf) < 2:
@@ -104,6 +104,9 @@ class MovementControlNode(Node):
                 'camera_orientation',
                 'human_frame',
                 rclpy.time.Time())
+            if self.tracking == False:
+                self.tracking = True
+                # self.client.Hello()
         except TransformException as e:
             self.get_logger().warn(f"TF lookup failed: {e}")
             self._halt()
@@ -118,6 +121,7 @@ class MovementControlNode(Node):
         if now_ros_sec - tf_time_sec > TF_TIMEOUT_S:
             self.get_logger().warn("TF data too old → stopping.")
             self._halt()
+            self.tracking = False
             return
         
         tx, tz = tf.transform.translation.x, tf.transform.translation.z
@@ -125,6 +129,7 @@ class MovementControlNode(Node):
 
         # Helps with person changing velocity
         pred_x, pred_z = self.predict()
+        # self.get_logger().info(f"{pred_x}, {pred_z}")
 
         # Compute errors
         dist_err = pred_z - DESIRED_DISTANCE
@@ -145,22 +150,23 @@ class MovementControlNode(Node):
             yaw_rate = self.yaw_pid.compute(yaw_err, now)
         
         # Scale forward speed so robot naturally slows while turning
-        vx *= math.cos(yaw_err)
+        # vx *= math.cos(yaw_err)
             
         # Velocity -> per-tick displacement
-        step_x  = self._vel_to_step(vx,       MAX_FWD_SPEED)
-        step_yaw= self._vel_to_step(yaw_rate, MAX_YAW_SPEED)
+        ctrl_x  = self._clip_control_values(vx,       MAX_FWD_SPEED)
+        ctrl_yaw= self._clip_control_values(yaw_rate, MAX_YAW_SPEED)
 
         self.get_logger().info(
             f"err [dist,yaw]=({dist_err:+.2f},{yaw_err:+.2f}) → "
             f"vel [x,ω]=({vx:+.2f},{yaw_rate:+.2f}) → "
-            f"step [Δx,Δyaw]=({step_x:+.3f},{step_yaw:+.3f})")
+            f"step [Δx,Δyaw]=({ctrl_x:+.3f},{ctrl_yaw:+.3f})")
         
         # Send command
-        if step_x == 0 and step_yaw == 0:
+        if ctrl_x == 0 and ctrl_yaw == 0:
             self._halt()
         else:
-            self.client.Move(step_x, 0.0, step_yaw)      # forward, lateral=0, yaw
+            pass
+            self.client.Move(ctrl_x, 0.0, ctrl_yaw)      # forward, lateral=0, yaw
             
     def _halt(self):
         self.client.StopMove()
@@ -170,7 +176,7 @@ class MovementControlNode(Node):
     def destroy_node(self):
         # Safely lay down before exit
         self._halt()
-        self.client.StandDown()                
+        # self.client.StandDown()                
         super().destroy_node()
 
 def main(args=None):
