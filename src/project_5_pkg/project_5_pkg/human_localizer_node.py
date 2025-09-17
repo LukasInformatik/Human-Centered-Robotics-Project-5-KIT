@@ -38,7 +38,7 @@ class HumanLocalizerPipeline(Node):
             self, 
             Image, 
             '/go2/d435i/color/image_raw',
-            qos_profile=camera_qos  # Note: 'qos' instead of 'qos_profile'
+            qos_profile=camera_qos 
         )
         self.sub_depth = Subscriber(
             self, 
