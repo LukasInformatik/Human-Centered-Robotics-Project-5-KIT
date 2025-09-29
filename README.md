@@ -11,6 +11,38 @@ The project focuses on enabling the Unitree GO2 robot to:
 - React to human gestures or voice commands (optional extension).
 - Operate safely in human-populated environments.
 
+### Project file structure
+```bash
+Human-Centered-Robotics-Project-5-KIT/
+├── src/project_5_pkg/
+│   ├── project_5_pkg/
+│   │   ├── scripts/
+│   │   |   ├── human_localizer.py
+│   │   |   ├── human_position_filter.py
+│   │   |   ├── human_tracker.py
+│   │   |   └── keypoint_tracker.py
+│   │   ├── bb_to_movement.py              # deprecated version without keypoint tracker
+│   │   ├── camera_orientation_node.py
+│   │   ├── human_localizer_node.py
+│   │   ├── publish_pose.py
+│   │   ├── yolo_keypoint_tracker_node.py
+│   │   └── yolo_person_tracker_node.py
+│   ├── config/
+│   ├── launch/
+│   ├── models/                            # Trained YOLO models
+│   ├── test/                        
+│   ├── setup.py
+│   ├── setup.cfg
+│   ├── package.xml
+│   └── README.md
+├── rosbags/                              # Rosbags recorded during developement (can be used for testing)
+├── HumanLocalizer/human_detector/        # All code for the human localization
+│   ├── models/                           # Trained YOLO models
+├── cyclonedds.xml                        # Setup for DDS connection to the Robot (individually for each computer)
+├── SS2025_Generic_Template.pptx          # Presentation Slides
+└── README.md
+```
+
 ### Setup instructions
 **Required Steps**
 - Install the repository
