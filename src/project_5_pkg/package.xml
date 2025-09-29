@@ -12,6 +12,7 @@
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>tf-transformations</depend>
+  <depend>image_geometry</depend>
   
   <exec_depend>cv_bridge</exec_depend>
 
