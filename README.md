@@ -12,6 +12,11 @@ The project focuses on enabling the Unitree GO2 robot to:
 - Operate safely in human-populated environments.
 
 ### Setup instructions
+**Required Steps**
+- Install the repository
+- Install and configure the Realsense ROS Wrapper on the Robot
+- Establish a connection with the Robot via DDS
+- Start all required ROS Nodes
 
 Clone the repository
 ```bash
