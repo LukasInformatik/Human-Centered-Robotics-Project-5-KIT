@@ -39,7 +39,6 @@ Human-Centered-Robotics-Project-5-KIT/
 ├── HumanLocalizer/human_detector/        # All code for the human localization
 │   ├── models/                           # Trained YOLO models
 ├── cyclonedds.xml                        # Setup for DDS connection to the Robot (individually for each computer)
-├── SS2025_Generic_Template.pptx          # Presentation Slides
 └── README.md
 ```
 
