@@ -70,7 +70,7 @@ class HumanLocalizerPipeline(Node):
             timestamp = stamp.sec + stamp.nanosec * 1e-9
 
 
-            # --- Hier yolo tracker auf 'rgb' anwenden ---
+            # --- YOLO + tracker ---
                 # bounding box (x,y, width, height)
             if True:
                 bb, _ = self.human_tracker.track(rgb)
@@ -79,14 +79,14 @@ class HumanLocalizerPipeline(Node):
                 height, width = frame.shape[:2]
                 bb = [x,y,width, height]
 
-            # --- Hier mediapipe pose auf jeder BBox laufen lassen ---
+            # --- Mediapipe keypoint tracker ---
             keypoints = self.kp_tracker.detect_pose(rgb, bb)
 
-            # --- Hier Pixelkoordinaten mit Tiefendaten und (fx,fy,cx,cy) in 3D reprojizieren ---
+            # --- 3d reprojection localization ---
             p_mean = self.localizer.localize(keypoints, depth, info_msg)
             #print(f"Durchschnittliche Position: x={x3d/1000:.2f} m, z={z3d/1000:.2f} m")
             
-            # --- Hier Kalman Filterung der Tiefendaten ---
+            # --- Kalman Filter---
             x3d, y3d, z3d = self.kf.update(p_mean, timestamp)
 
             t = TransformStamped()

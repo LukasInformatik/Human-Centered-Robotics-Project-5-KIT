@@ -19,7 +19,7 @@ class KeypointTracker:
 
         roi = rgb[y:y+h, x:x+w]
         if roi.size == 0:
-            return {}  # ROI leer -> gib leeres Dict zurück
+            return {}  # ROI empty
 
         results = self.pose.process(roi)
 
@@ -27,16 +27,15 @@ class KeypointTracker:
         if results.pose_landmarks:
             landmarks = results.pose_landmarks.landmark
 
-            # Extrahiere relevante Keypoints
+            # Extract keypoints
             for name in ['LEFT_HIP', 'RIGHT_HIP', 'LEFT_SHOULDER', 'RIGHT_SHOULDER']:
                 lm = landmarks[self.landmark_enum[name]]
                 abs_x = int(x + lm.x * w)
                 abs_y = int(y + lm.y * h)
                 keypoints[name.lower()] = (abs_x, abs_y)
 
-            # Optional visualisieren
+            # optional visualize
         if self.visualize:
-            # Kopie der ROI für Visualisierung
             roi_vis = roi.copy()
             self.mp_draw.draw_landmarks(
                 roi_vis,
